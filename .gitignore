@@ -30,6 +30,8 @@ constant/polyMesh/neighbour*
 constant/polyMesh/boundary*
 constant/polyMesh/sets
 constant/polyMesh/*
+polyMesh/
+polyMesh.orig/
 
 # Zones and levels
 *Level*
