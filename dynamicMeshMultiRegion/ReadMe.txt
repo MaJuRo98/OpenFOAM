@@ -1,4 +1,7 @@
 To add:
 
-Create segments in blockMesh with a certain radius or copy from nccImpeller
-Run createNonConformalCouples for the segment
+X Create segments in blockMesh with a certain radius or copy from nccImpeller 
+X Run createNonConformalCouples for the segment
+Cyclic boundary conditions
+Change size
+Automatic slice detection
