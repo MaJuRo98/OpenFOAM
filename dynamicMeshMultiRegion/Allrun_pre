@@ -5,4 +5,12 @@ cd ${0%/*} || exit 1    # Run from this directory
 blockMesh -blockTopology > log.blockMeshTopology
 blockMesh > log.blockMesh
 
+createNonConformalCouples -overwrite > log.createNonConformalCouples
+
+#cp -r 0.001/polyMesh constant/polyMesh
+#cp -r 0.001/fvMesh constant/fvMesh
+
+#rm -r 0.001
+
+touch case.foam
 #------------------------------------------------------------------------------

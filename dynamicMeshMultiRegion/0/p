@@ -33,14 +33,20 @@ boundaryField
         value           uniform 0;
     }
 
-    "walls_.*"
+    "(walls_rotor|nonCoupleIn2|nonCoupleOut1)"
+    {
+        type            fixedFluxPressure;
+    }
+
+    "(walls_igv|walls_stator)"
     {
         type            zeroGradient;
     }
 
-    nonCouple
+
+    "(nonCoupleIn1|nonCoupleOut2)"    //Parts of static domain
     {
-        type            fixedFluxPressure;
+        type            zeroGradient;
     }
 
 }

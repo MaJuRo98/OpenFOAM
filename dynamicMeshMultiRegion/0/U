@@ -15,10 +15,12 @@ FoamFile
 
 dimensions      [0 1 -1 0 0 0 0];
 
-internalField   uniform (0 0 0);
+internalField   uniform (0 0 1);
 
 boundaryField
 {
+    #includeEtc "caseDicts/setConstraintTypes"
+    
     inlet
     {
         type            fixedValue;
@@ -44,6 +46,12 @@ boundaryField
     "(walls_rotor|nonCoupleIn2|nonCoupleOut1)"    //Parts of moving domain
     {
         type            movingWallVelocity;
+        value           $internalField;
+    }
+
+    nonCouple
+    {
+        type            movingWallSlipVelocity;
         value           $internalField;
     }
 

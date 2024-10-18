@@ -1,0 +1,58 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      createNonConformalCouplesDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+nonConformalCoupleIn90
+{
+    patches         (nonCoupleIn1 nonCoupleIn2);
+    transform       none;
+}
+
+nonConformalCoupleIn150
+{
+    $nonConformalCoupleIn90;
+    transform       rotational;
+    rotationAxis    (0 0 1);
+    rotationCentre  (0 0 0);
+    rotationAngle   150;
+}
+
+nonConformalCoupleIn210 { $nonConformalCoupleIn150; rotationAngle 210;  }
+nonConformalCoupleIn270 { $nonConformalCoupleIn150; rotationAngle 270;  }
+nonConformalCoupleIn330 { $nonConformalCoupleIn150; rotationAngle 330; }
+nonConformalCoupleIn30  { $nonConformalCoupleIn150; rotationAngle 30; }
+
+
+nonConformalCoupleOut90
+{
+    patches         (nonCoupleOut1 nonCoupleOut2);
+    transform       none;
+}
+
+nonConformalCoupleOut150
+{
+    patches         (nonCoupleOut1 nonCoupleOut2);
+    transform       rotational;
+    rotationAxis    (0 0 1);
+    rotationCentre  (0 0 0);
+    rotationAngle   -150;
+}
+
+nonConformalCoupleOut210 { $nonConformalCoupleOut150; rotationAngle -210; }
+nonConformalCoupleOut270 { $nonConformalCoupleOut150; rotationAngle -270; }
+nonConformalCoupleOut330 { $nonConformalCoupleOut150; rotationAngle -330; }
+nonConformalCoupleOut30  { $nonConformalCoupleOut150; rotationAngle -30; }
+
+// ************************************************************************* //
