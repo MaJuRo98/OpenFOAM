@@ -20,63 +20,33 @@ convertToMeters 0.001;
 //Radial values
 maxRadius 750;
 minRadius 630;
-
-thetaOne 0;
+thetaOne 60;
 thetaTwo 90;
 
+#codeStream
+{
+   codeInclude
+   #{
+      #include "pointField.H"
+   #};
+
+
+    code
+    #{
+    scalar rad_AngleOne = 0;
+
+        if ($thetaOne == 0)
+        {
+            rad_AngleOne = 0.0;
+        }
+        else
+        {
+             rad_AngleOne = degToRad($thetaOne);
+        }
+        os << rad_AngleOne;
+    #};
+}
 sectionLength 200;
-
-cosRad_AngleOne
-#codeStream
-{
-    code
-    #{
-    scalar rad_AngleOne = 0;
-    scalar cosRad_AngleOne = 0;
-
-        if ($thetaOne == 0)
-        {
-            cosRad_AngleOne = 1;
-        }
-        else
-        {
-             rad_AngleOne = degToRad($thetaOne);
-             cosRad_AngleOne = cos(rad_AngleOne);
-        }
-
-
-        os << cosRad_AngleOne;
-
-
-    #};
-};
-
-sinRad_AngleOne
-#codeStream
-{
-    code
-    #{
-    scalar rad_AngleOne = 0;
-    scalar sinRad_AngleOne = 0;
-
-        if ($thetaOne == 0)
-        {
-            sinRad_AngleOne = 0;
-        }
-        else
-        {
-             rad_AngleOne = degToRad($thetaOne);
-             sinRad_AngleOne = sin(rad_AngleOne);
-        }
-
-
-        os << sinRad_AngleOne;
-
-
-    #};
-};
-
-
 
 //- Derived quantities
 deltaTheta   #calc "$thetaTwo - $thetaOne";
@@ -84,11 +54,11 @@ deltaTheta   #calc "$thetaTwo - $thetaOne";
 rad_AngleTwo #calc "degToRad($thetaTwo)";
 
 //Point1
-x_0 #calc "$minRadius*$cosRad_AngleOne";
-y_0 #calc "$minRadius*$sinRad_AngleOne";
+x_0 #calc "$minRadius*cos($rad_AngleOne)";
+y_0 #calc "$minRadius*sin($rad_AngleOne)";
 //Point2
-x_1 #calc "$maxRadius*$cosRad_AngleOne";
-y_1 #calc "$maxRadius*$sinRad_AngleOne";
+x_1 #calc "$maxRadius*cos($rad_AngleOne)";
+y_1 #calc "$maxRadius*sin($rad_AngleOne)";
 //Point 3
 x_2 #calc "$maxRadius*cos($rad_AngleTwo)";
 y_2 #calc "$maxRadius*sin($rad_AngleTwo)";
