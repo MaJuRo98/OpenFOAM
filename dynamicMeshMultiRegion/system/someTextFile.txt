@@ -16,16 +16,162 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-nonConformalCoupleIn90
+
+nonConformalCoupleIn5.625
 {
    patches         (nonCoupleIn1 nonCoupleIn2);
    transform       none; 
 }
-nonConformalCoupleIn150
+
+nonConformalCoupleIn11.25
 {
-$nonConformalCoupleIn90; 
-transform rotational;rotationAxis ( 0 0 1);rotationAngle 150; 
+   $nonConformalCoupleIn5.625; 
+   transform rotational; 
+   rotationAxis   (0 0 1); 
+   rotationCentre (0 0 0); 
+   rotationAngle 11.25; 
 }
-nonConformalCoupleIn30 {  $nonConformalCoupleIn150; rotationAngle 30;  } 
-nonConformalCoupleIn90 {  $nonConformalCoupleIn150; rotationAngle 90;  } 
-nonConformalCoupleIn150 {  $nonConformalCoupleIn150; rotationAngle 150;  } 
+
+nonConformalCoupleIn16.875 {  $nonConformalCoupleIn11.25; rotationAngle 16.875;  } 
+nonConformalCoupleIn22.5 {  $nonConformalCoupleIn11.25; rotationAngle 22.5;  } 
+nonConformalCoupleIn28.125 {  $nonConformalCoupleIn11.25; rotationAngle 28.125;  } 
+nonConformalCoupleIn33.75 {  $nonConformalCoupleIn11.25; rotationAngle 33.75;  } 
+nonConformalCoupleIn39.375 {  $nonConformalCoupleIn11.25; rotationAngle 39.375;  } 
+nonConformalCoupleIn45.0 {  $nonConformalCoupleIn11.25; rotationAngle 45.0;  } 
+nonConformalCoupleIn50.625 {  $nonConformalCoupleIn11.25; rotationAngle 50.625;  } 
+nonConformalCoupleIn56.25 {  $nonConformalCoupleIn11.25; rotationAngle 56.25;  } 
+nonConformalCoupleIn61.875 {  $nonConformalCoupleIn11.25; rotationAngle 61.875;  } 
+nonConformalCoupleIn67.5 {  $nonConformalCoupleIn11.25; rotationAngle 67.5;  } 
+nonConformalCoupleIn73.125 {  $nonConformalCoupleIn11.25; rotationAngle 73.125;  } 
+nonConformalCoupleIn78.75 {  $nonConformalCoupleIn11.25; rotationAngle 78.75;  } 
+nonConformalCoupleIn84.375 {  $nonConformalCoupleIn11.25; rotationAngle 84.375;  } 
+nonConformalCoupleIn90.0 {  $nonConformalCoupleIn11.25; rotationAngle 90.0;  } 
+nonConformalCoupleIn95.625 {  $nonConformalCoupleIn11.25; rotationAngle 95.625;  } 
+nonConformalCoupleIn101.25 {  $nonConformalCoupleIn11.25; rotationAngle 101.25;  } 
+nonConformalCoupleIn106.875 {  $nonConformalCoupleIn11.25; rotationAngle 106.875;  } 
+nonConformalCoupleIn112.5 {  $nonConformalCoupleIn11.25; rotationAngle 112.5;  } 
+nonConformalCoupleIn118.125 {  $nonConformalCoupleIn11.25; rotationAngle 118.125;  } 
+nonConformalCoupleIn123.75 {  $nonConformalCoupleIn11.25; rotationAngle 123.75;  } 
+nonConformalCoupleIn129.375 {  $nonConformalCoupleIn11.25; rotationAngle 129.375;  } 
+nonConformalCoupleIn135.0 {  $nonConformalCoupleIn11.25; rotationAngle 135.0;  } 
+nonConformalCoupleIn140.625 {  $nonConformalCoupleIn11.25; rotationAngle 140.625;  } 
+nonConformalCoupleIn146.25 {  $nonConformalCoupleIn11.25; rotationAngle 146.25;  } 
+nonConformalCoupleIn151.875 {  $nonConformalCoupleIn11.25; rotationAngle 151.875;  } 
+nonConformalCoupleIn157.5 {  $nonConformalCoupleIn11.25; rotationAngle 157.5;  } 
+nonConformalCoupleIn163.125 {  $nonConformalCoupleIn11.25; rotationAngle 163.125;  } 
+nonConformalCoupleIn168.75 {  $nonConformalCoupleIn11.25; rotationAngle 168.75;  } 
+nonConformalCoupleIn174.375 {  $nonConformalCoupleIn11.25; rotationAngle 174.375;  } 
+nonConformalCoupleIn180.0 {  $nonConformalCoupleIn11.25; rotationAngle 180.0;  } 
+nonConformalCoupleIn185.625 {  $nonConformalCoupleIn11.25; rotationAngle 185.625;  } 
+nonConformalCoupleIn191.25 {  $nonConformalCoupleIn11.25; rotationAngle 191.25;  } 
+nonConformalCoupleIn196.875 {  $nonConformalCoupleIn11.25; rotationAngle 196.875;  } 
+nonConformalCoupleIn202.5 {  $nonConformalCoupleIn11.25; rotationAngle 202.5;  } 
+nonConformalCoupleIn208.125 {  $nonConformalCoupleIn11.25; rotationAngle 208.125;  } 
+nonConformalCoupleIn213.75 {  $nonConformalCoupleIn11.25; rotationAngle 213.75;  } 
+nonConformalCoupleIn219.375 {  $nonConformalCoupleIn11.25; rotationAngle 219.375;  } 
+nonConformalCoupleIn225.0 {  $nonConformalCoupleIn11.25; rotationAngle 225.0;  } 
+nonConformalCoupleIn230.625 {  $nonConformalCoupleIn11.25; rotationAngle 230.625;  } 
+nonConformalCoupleIn236.25 {  $nonConformalCoupleIn11.25; rotationAngle 236.25;  } 
+nonConformalCoupleIn241.875 {  $nonConformalCoupleIn11.25; rotationAngle 241.875;  } 
+nonConformalCoupleIn247.5 {  $nonConformalCoupleIn11.25; rotationAngle 247.5;  } 
+nonConformalCoupleIn253.125 {  $nonConformalCoupleIn11.25; rotationAngle 253.125;  } 
+nonConformalCoupleIn258.75 {  $nonConformalCoupleIn11.25; rotationAngle 258.75;  } 
+nonConformalCoupleIn264.375 {  $nonConformalCoupleIn11.25; rotationAngle 264.375;  } 
+nonConformalCoupleIn270.0 {  $nonConformalCoupleIn11.25; rotationAngle 270.0;  } 
+nonConformalCoupleIn275.625 {  $nonConformalCoupleIn11.25; rotationAngle 275.625;  } 
+nonConformalCoupleIn281.25 {  $nonConformalCoupleIn11.25; rotationAngle 281.25;  } 
+nonConformalCoupleIn286.875 {  $nonConformalCoupleIn11.25; rotationAngle 286.875;  } 
+nonConformalCoupleIn292.5 {  $nonConformalCoupleIn11.25; rotationAngle 292.5;  } 
+nonConformalCoupleIn298.125 {  $nonConformalCoupleIn11.25; rotationAngle 298.125;  } 
+nonConformalCoupleIn303.75 {  $nonConformalCoupleIn11.25; rotationAngle 303.75;  } 
+nonConformalCoupleIn309.375 {  $nonConformalCoupleIn11.25; rotationAngle 309.375;  } 
+nonConformalCoupleIn315.0 {  $nonConformalCoupleIn11.25; rotationAngle 315.0;  } 
+nonConformalCoupleIn320.625 {  $nonConformalCoupleIn11.25; rotationAngle 320.625;  } 
+nonConformalCoupleIn326.25 {  $nonConformalCoupleIn11.25; rotationAngle 326.25;  } 
+nonConformalCoupleIn331.875 {  $nonConformalCoupleIn11.25; rotationAngle 331.875;  } 
+nonConformalCoupleIn337.5 {  $nonConformalCoupleIn11.25; rotationAngle 337.5;  } 
+nonConformalCoupleIn343.125 {  $nonConformalCoupleIn11.25; rotationAngle 343.125;  } 
+nonConformalCoupleIn348.75 {  $nonConformalCoupleIn11.25; rotationAngle 348.75;  } 
+nonConformalCoupleIn354.375 {  $nonConformalCoupleIn11.25; rotationAngle 354.375;  } 
+nonConformalCoupleIn360.0 {  $nonConformalCoupleIn11.25; rotationAngle 360.0;  } 
+
+
+nonConformalCoupleOut5.625
+{
+   patches         (nonCoupleOut1 nonCoupleOut2);
+   transform       none; 
+}
+
+nonConformalCoupleOut11.25
+{
+   $nonConformalCoupleOut5.625; 
+   transform rotational;
+   rotationAxis   (0 0 1); 
+   rotationCentre (0 0 0); 
+   rotationAngle -11.25; 
+}
+
+nonConformalCoupleOut16.875 {  $nonConformalCoupleOut11.25; rotationAngle -16.875;  } 
+nonConformalCoupleOut22.5 {  $nonConformalCoupleOut11.25; rotationAngle -22.5;  } 
+nonConformalCoupleOut28.125 {  $nonConformalCoupleOut11.25; rotationAngle -28.125;  } 
+nonConformalCoupleOut33.75 {  $nonConformalCoupleOut11.25; rotationAngle -33.75;  } 
+nonConformalCoupleOut39.375 {  $nonConformalCoupleOut11.25; rotationAngle -39.375;  } 
+nonConformalCoupleOut45.0 {  $nonConformalCoupleOut11.25; rotationAngle -45.0;  } 
+nonConformalCoupleOut50.625 {  $nonConformalCoupleOut11.25; rotationAngle -50.625;  } 
+nonConformalCoupleOut56.25 {  $nonConformalCoupleOut11.25; rotationAngle -56.25;  } 
+nonConformalCoupleOut61.875 {  $nonConformalCoupleOut11.25; rotationAngle -61.875;  } 
+nonConformalCoupleOut67.5 {  $nonConformalCoupleOut11.25; rotationAngle -67.5;  } 
+nonConformalCoupleOut73.125 {  $nonConformalCoupleOut11.25; rotationAngle -73.125;  } 
+nonConformalCoupleOut78.75 {  $nonConformalCoupleOut11.25; rotationAngle -78.75;  } 
+nonConformalCoupleOut84.375 {  $nonConformalCoupleOut11.25; rotationAngle -84.375;  } 
+nonConformalCoupleOut90.0 {  $nonConformalCoupleOut11.25; rotationAngle -90.0;  } 
+nonConformalCoupleOut95.625 {  $nonConformalCoupleOut11.25; rotationAngle -95.625;  } 
+nonConformalCoupleOut101.25 {  $nonConformalCoupleOut11.25; rotationAngle -101.25;  } 
+nonConformalCoupleOut106.875 {  $nonConformalCoupleOut11.25; rotationAngle -106.875;  } 
+nonConformalCoupleOut112.5 {  $nonConformalCoupleOut11.25; rotationAngle -112.5;  } 
+nonConformalCoupleOut118.125 {  $nonConformalCoupleOut11.25; rotationAngle -118.125;  } 
+nonConformalCoupleOut123.75 {  $nonConformalCoupleOut11.25; rotationAngle -123.75;  } 
+nonConformalCoupleOut129.375 {  $nonConformalCoupleOut11.25; rotationAngle -129.375;  } 
+nonConformalCoupleOut135.0 {  $nonConformalCoupleOut11.25; rotationAngle -135.0;  } 
+nonConformalCoupleOut140.625 {  $nonConformalCoupleOut11.25; rotationAngle -140.625;  } 
+nonConformalCoupleOut146.25 {  $nonConformalCoupleOut11.25; rotationAngle -146.25;  } 
+nonConformalCoupleOut151.875 {  $nonConformalCoupleOut11.25; rotationAngle -151.875;  } 
+nonConformalCoupleOut157.5 {  $nonConformalCoupleOut11.25; rotationAngle -157.5;  } 
+nonConformalCoupleOut163.125 {  $nonConformalCoupleOut11.25; rotationAngle -163.125;  } 
+nonConformalCoupleOut168.75 {  $nonConformalCoupleOut11.25; rotationAngle -168.75;  } 
+nonConformalCoupleOut174.375 {  $nonConformalCoupleOut11.25; rotationAngle -174.375;  } 
+nonConformalCoupleOut180.0 {  $nonConformalCoupleOut11.25; rotationAngle -180.0;  } 
+nonConformalCoupleOut185.625 {  $nonConformalCoupleOut11.25; rotationAngle -185.625;  } 
+nonConformalCoupleOut191.25 {  $nonConformalCoupleOut11.25; rotationAngle -191.25;  } 
+nonConformalCoupleOut196.875 {  $nonConformalCoupleOut11.25; rotationAngle -196.875;  } 
+nonConformalCoupleOut202.5 {  $nonConformalCoupleOut11.25; rotationAngle -202.5;  } 
+nonConformalCoupleOut208.125 {  $nonConformalCoupleOut11.25; rotationAngle -208.125;  } 
+nonConformalCoupleOut213.75 {  $nonConformalCoupleOut11.25; rotationAngle -213.75;  } 
+nonConformalCoupleOut219.375 {  $nonConformalCoupleOut11.25; rotationAngle -219.375;  } 
+nonConformalCoupleOut225.0 {  $nonConformalCoupleOut11.25; rotationAngle -225.0;  } 
+nonConformalCoupleOut230.625 {  $nonConformalCoupleOut11.25; rotationAngle -230.625;  } 
+nonConformalCoupleOut236.25 {  $nonConformalCoupleOut11.25; rotationAngle -236.25;  } 
+nonConformalCoupleOut241.875 {  $nonConformalCoupleOut11.25; rotationAngle -241.875;  } 
+nonConformalCoupleOut247.5 {  $nonConformalCoupleOut11.25; rotationAngle -247.5;  } 
+nonConformalCoupleOut253.125 {  $nonConformalCoupleOut11.25; rotationAngle -253.125;  } 
+nonConformalCoupleOut258.75 {  $nonConformalCoupleOut11.25; rotationAngle -258.75;  } 
+nonConformalCoupleOut264.375 {  $nonConformalCoupleOut11.25; rotationAngle -264.375;  } 
+nonConformalCoupleOut270.0 {  $nonConformalCoupleOut11.25; rotationAngle -270.0;  } 
+nonConformalCoupleOut275.625 {  $nonConformalCoupleOut11.25; rotationAngle -275.625;  } 
+nonConformalCoupleOut281.25 {  $nonConformalCoupleOut11.25; rotationAngle -281.25;  } 
+nonConformalCoupleOut286.875 {  $nonConformalCoupleOut11.25; rotationAngle -286.875;  } 
+nonConformalCoupleOut292.5 {  $nonConformalCoupleOut11.25; rotationAngle -292.5;  } 
+nonConformalCoupleOut298.125 {  $nonConformalCoupleOut11.25; rotationAngle -298.125;  } 
+nonConformalCoupleOut303.75 {  $nonConformalCoupleOut11.25; rotationAngle -303.75;  } 
+nonConformalCoupleOut309.375 {  $nonConformalCoupleOut11.25; rotationAngle -309.375;  } 
+nonConformalCoupleOut315.0 {  $nonConformalCoupleOut11.25; rotationAngle -315.0;  } 
+nonConformalCoupleOut320.625 {  $nonConformalCoupleOut11.25; rotationAngle -320.625;  } 
+nonConformalCoupleOut326.25 {  $nonConformalCoupleOut11.25; rotationAngle -326.25;  } 
+nonConformalCoupleOut331.875 {  $nonConformalCoupleOut11.25; rotationAngle -331.875;  } 
+nonConformalCoupleOut337.5 {  $nonConformalCoupleOut11.25; rotationAngle -337.5;  } 
+nonConformalCoupleOut343.125 {  $nonConformalCoupleOut11.25; rotationAngle -343.125;  } 
+nonConformalCoupleOut348.75 {  $nonConformalCoupleOut11.25; rotationAngle -348.75;  } 
+nonConformalCoupleOut354.375 {  $nonConformalCoupleOut11.25; rotationAngle -354.375;  } 
+nonConformalCoupleOut360.0 {  $nonConformalCoupleOut11.25; rotationAngle -360.0;  } 
+
+// ************************************************************************* // 

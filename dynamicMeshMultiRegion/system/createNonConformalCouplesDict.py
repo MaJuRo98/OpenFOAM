@@ -5,13 +5,12 @@
 
 
 #User input
-startPhi = 30
-deltaPhi = 60
-i = 0
-j = 0
-secondValue = 20
-currentValue = 0
+startPhi = 0
+bladeNumber = 63
+pitch = 360/bladeNumber          #Carefull, does not allways apply
 
+# Define the file path to save the output
+output_file_path = "someTextFile.txt"
 
 header_content = """\
 /*--------------------------------*- C++ -*----------------------------------*\\
@@ -34,47 +33,95 @@ FoamFile
 
 """
 
-
+#nonConformalCoupleIn
 coupleOneIn = [
-    f"nonConformalCoupleIn{startPhi+deltaPhi}\n",
+    f"nonConformalCoupleIn{startPhi+pitch}\n",
     "{\n",
     "   patches         (nonCoupleIn1 nonCoupleIn2);\n",
     "   transform       none; \n",
     "}\n",
 ]
 coupleTwoIn = [
-    f"nonConformalCoupleIn{startPhi+deltaPhi*2}\n",
+    f"nonConformalCoupleIn{startPhi+pitch*2}\n",
     "{\n",
-    f"$nonConformalCoupleIn{startPhi+deltaPhi}; \n",
-    f"transform rotational;",
-    f"rotationAxis ( 0 0 1);",
-    f"rotationAngle {startPhi+deltaPhi*2}; \n",
+    f"   $nonConformalCoupleIn{startPhi+pitch}; \n",
+    f"   transform rotational; \n",
+    f"   rotationAxis   (0 0 1); \n",
+    f"   rotationCentre (0 0 0); \n",
+    f"   rotationAngle {startPhi+pitch*2}; \n",
     "}\n",
 ]
 
-coupleN = f"nonConformalCoupleIn{startPhi+deltaPhi*2} {{  $nonConformalCoupleIn{startPhi+deltaPhi*(3+i)}; rotationAngle {startPhi+deltaPhi*(3+i)};  }} \n"
+#nonConformalCoupleOut
+coupleOneOut = [
+    f"nonConformalCoupleOut{startPhi+pitch}\n",
+    "{\n",
+    "   patches         (nonCoupleOut1 nonCoupleOut2);\n",
+    "   transform       none; \n",
+    "}\n",
+]
+coupleTwoOut = [
+    f"nonConformalCoupleOut{startPhi+pitch*2}\n",
+    "{\n",
+    f"   $nonConformalCoupleOut{startPhi+pitch}; \n",
+    f"   transform rotational;\n",
+    f"   rotationAxis   (0 0 1); \n",
+    f"   rotationCentre (0 0 0); \n",
+    f"   rotationAngle -{startPhi+pitch*2}; \n",
+    "}\n",
+]
 
 emptyLine = f"\n"
 
+i = 0
+j = 0
 
-
-# Define the file path to save the output
-output_file_path = "someTextFile.txt"
-
-# Write the header to the new file
+# File to 
 with open(output_file_path, 'w') as file:
     file.write(header_content)
+    file.write(emptyLine)
     for line in coupleOneIn:
         file.write(line)
+    file.write(emptyLine)
+
     for line in coupleTwoIn:
         file.write(line)
-    while j < 3:
-        value = startPhi+deltaPhi*j
+    file.write(emptyLine)
+
+    while j < bladeNumber-2:
+        value = startPhi+pitch*(j+3)
+        if value <= 360:
+            value = value
+        else:
+            value = value - 360
         i = i+1
-        file.write(f"nonConformalCoupleIn{value} {{  $nonConformalCoupleIn{startPhi+deltaPhi*2}; rotationAngle {value};  }} \n")
+        file.write(f"nonConformalCoupleIn{value} {{  $nonConformalCoupleIn{startPhi+pitch*2}; rotationAngle {value};  }} \n")
         j = j+1
         print(f"Hi {j}")
+    
+    file.write(emptyLine)
+    file.write(emptyLine)
+
+    for line in coupleOneOut:
+        file.write(line)
+    
+    file.write(emptyLine)
+    
+    for line in coupleTwoOut:
+        file.write(line)
+    file.write(emptyLine)
+    j = 0
+    while j < bladeNumber-2:
+        value = startPhi+pitch*(j+3)
+        if value <= 360:
+            value = value
+        else:
+            value = value - 360
+        i = i+1
+        file.write(f"nonConformalCoupleOut{value} {{  $nonConformalCoupleOut{startPhi+pitch*2}; rotationAngle {-value};  }} \n")
+        j = j+1
+        print(f"Hi {j}")
+    file.write(emptyLine)
+    file.write("""// ************************************************************************* // """)
 
 print(f"Full header written to {output_file_path}")
-
-
