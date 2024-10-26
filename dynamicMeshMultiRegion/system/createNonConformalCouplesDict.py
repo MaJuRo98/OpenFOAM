@@ -69,8 +69,9 @@ with open(output_file_path, 'w') as file:
     for line in coupleTwoIn:
         file.write(line)
     while j < 3:
+        value = startPhi+deltaPhi*j
         i = i+1
-        file.write(coupleN)
+        file.write(f"nonConformalCoupleIn{value} {{  $nonConformalCoupleIn{startPhi+deltaPhi*2}; rotationAngle {value};  }} \n")
         j = j+1
         print(f"Hi {j}")
 
