@@ -1,0 +1,279 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Note: this file is a Copy of $FOAM_TUTORIALS/resources/blockMesh/pitzDaily
+
+convertToMeters 0.001;
+
+//Radial values
+maxRadius 750;
+minRadius 630;
+thetaOne 60;
+thetaTwo 90;
+
+#codeStream
+{
+   codeInclude
+   #{
+      #include "pointField.H"
+   #};
+
+
+    code
+    #{
+    scalar rad_AngleOne = 0;
+
+        if ($thetaOne == 0)
+        {
+            rad_AngleOne = 0.0;
+        }
+        else
+        {
+             rad_AngleOne = degToRad($thetaOne);
+        }
+        os << rad_AngleOne;
+    #};
+}
+sectionLength 200;
+
+//- Derived quantities
+deltaTheta   #calc "$thetaTwo - $thetaOne";
+//rad_AngleOne #calc "degToRad($thetaOne)";
+rad_AngleTwo #calc "degToRad($thetaTwo)";
+
+//Point1
+x_0 #calc "$minRadius*cos($rad_AngleOne)";
+y_0 #calc "$minRadius*sin($rad_AngleOne)";
+//Point2
+x_1 #calc "$maxRadius*cos($rad_AngleOne)";
+y_1 #calc "$maxRadius*sin($rad_AngleOne)";
+//Point 3
+x_2 #calc "$maxRadius*cos($rad_AngleTwo)";
+y_2 #calc "$maxRadius*sin($rad_AngleTwo)";
+//Point4
+x_3 #calc "$minRadius*cos($rad_AngleTwo)";
+y_3 #calc "$minRadius*sin($rad_AngleTwo)";
+
+
+vertices
+(
+
+    ($x_0 $y_0 0)
+    ($x_1 $y_1 0)
+    ($x_2 $y_2 0)
+    ($x_3 $y_3 0)
+    ($x_0 $y_0 #calc "1*$sectionLength")
+    ($x_1 $y_1 #calc "1*$sectionLength")
+    ($x_2 $y_2 #calc "1*$sectionLength")
+    ($x_3 $y_3 #calc "1*$sectionLength")
+
+    ($x_0 $y_0 #calc "1*$sectionLength")
+    ($x_1 $y_1 #calc "1*$sectionLength")
+    ($x_2 $y_2 #calc "1*$sectionLength")
+    ($x_3 $y_3 #calc "1*$sectionLength")
+    ($x_0 $y_0 #calc "2*$sectionLength")
+    ($x_1 $y_1 #calc "2*$sectionLength")
+    ($x_2 $y_2 #calc "2*$sectionLength")
+    ($x_3 $y_3 #calc "2*$sectionLength")
+
+    ($x_0 $y_0 #calc "2*$sectionLength")
+    ($x_1 $y_1 #calc "2*$sectionLength")
+    ($x_2 $y_2 #calc "2*$sectionLength")
+    ($x_3 $y_3 #calc "2*$sectionLength")
+    ($x_0 $y_0 #calc "3*$sectionLength")
+    ($x_1 $y_1 #calc "3*$sectionLength")
+    ($x_2 $y_2 #calc "3*$sectionLength")
+    ($x_3 $y_3 #calc "3*$sectionLength")
+
+);
+
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) igv (30 30 10) simpleGrading (1 1 1)
+    hex (8 9 10 11 12 13 14 15) rotor (30 30 10) simpleGrading (1 1 1)
+    hex (16 17 18 19 20 21 22 23) stator (30 30 10) simpleGrading (1 1 1)
+
+);
+
+edges
+    (
+        arc 1 2  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 0 3  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 5 6  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 4 7  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+
+        arc 9 10  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 8 11  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 13 14  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 12 15  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+
+        arc 17 18  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 16 19  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 21 22  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 20 23  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+    );
+
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 1 2 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (20 21 22 23)
+        );
+    }
+    walls_igv
+    {
+        type wall;
+        faces
+        (
+            (0 4 7 3)
+            (1 5 6 2)
+        );
+    }
+    walls_rotor
+    {
+        type wall;
+        faces
+        (
+            (10 14 13 9)
+            (8 12 15 11)
+        );
+    }
+    walls_stator
+    {
+        type wall;
+        faces
+        (
+           // (19 23 22 18)
+            (16 20 23 19)
+           // (17 21 20 16)
+           (18 22 21 17)
+        );
+    }
+
+    cyclicIn_igv
+    {
+        type cyclic;
+        neighbourPatch cyclicOut_igv;
+        faces
+        (
+
+            (0 4 5 1)
+        );
+    }
+
+    cyclicOut_igv
+    {
+        type cyclic;
+        neighbourPatch cyclicIn_igv;
+        faces
+        (
+            (2 6 7 3)
+        );
+    }
+
+    cyclicIn_rotor
+    {
+        type cyclic;
+        neighbourPatch cyclicOut_rotor;
+        faces
+        (
+            (9 13 12 8)
+        );
+    }
+
+    cyclicOut_rotor
+    {
+        type cyclic;
+        neighbourPatch cyclicIn_rotor;
+        faces
+        (
+            (11 15 14 10)
+        );
+    }
+
+
+    cyclicIn_stator
+    {
+        type cyclic;
+        neighbourPatch cyclicOut_stator;
+        faces
+        (
+            (17 21 20 16)
+        );
+    }
+    cyclicOut_stator
+    {
+        type cyclic;
+        neighbourPatch cyclicIn_stator;
+        faces
+        (
+            (19 23 22 18)
+        );
+    }
+
+    nonCoupleIn1
+    {
+        type patch;
+        inGroups (nonCouple);
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+
+    nonCoupleIn2
+    {
+        type patch;
+        inGroups (nonCouple);
+        faces
+        (
+            (8 9 10 11)
+        );
+    }
+    nonCoupleOut1
+    {
+        type patch;
+        inGroups (nonCouple);
+        faces
+        (
+            (12 13 14 15)
+        );
+    }
+
+    nonCoupleOut2
+    {
+        type patch;
+        inGroups (nonCouple);
+        faces
+        (
+            (16 17 18 19)
+        );
+    }
+);
+
+// ************************************************************************* //
