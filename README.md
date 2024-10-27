@@ -26,4 +26,9 @@ X Generate a mesh with cfMesh
 |
 -> Refine on patches
 
+Mesh rotor and run actual 0.5 stages case
+
+Add static domains
+
+Add IGV and stators
 
