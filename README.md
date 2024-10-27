@@ -19,8 +19,11 @@ X Generate a mesh with cfMesh
 
 |
 -> Create patches
+
 |
 -> Add boundary layer
+
 |
 -> Refine on patches
+
 
