@@ -1,0 +1,19 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+
+rm -r constant/polyMesh
+rm -r constant/triSurface/*.fms
+
+
+surfaceConvert "constant/triSurface/WakeGenerator.stl" "constant/triSurface/WakeGenerator_scaled.stl" -clean -scale 0.001
+
+NAME_DIR="WakeGenerator_scaled.stl"
+
+surfaceFeatureEdges "constant/triSurface/$NAME_DIR"  constant/triSurface/testCase.fms
+
+cartesianMesh
+
+
+touch case.foam
+#------------------------------------------------------------------------------
