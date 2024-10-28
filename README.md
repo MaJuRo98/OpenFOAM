@@ -18,13 +18,13 @@ X Generate a mesh with cfMesh
 
 
 |
--> Create patches
+-> Create patches x
 
 |
--> Add boundary layer
+-> Add boundary layer x
 
 |
--> Refine on patches
+-> Refine on patches x
 
 Mesh rotor and run actual 0.5 stages case
 
