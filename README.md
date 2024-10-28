@@ -18,13 +18,15 @@ X Generate a mesh with cfMesh
 
 
 |
--> Create patches x
+-> Create patches x 
 
 |
 -> Add boundary layer x
 
 |
 -> Refine on patches x
+|
+-> Refine with box, step wise refinment -> finish cfMesh-File
 
 Mesh rotor and run actual 0.5 stages case
 
