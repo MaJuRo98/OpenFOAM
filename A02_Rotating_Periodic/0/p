@@ -1,0 +1,87 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "initialConditions"
+
+#if #calc "${compressible} == 1"
+	//compressible
+	dimensions      [1 -1 -2 0 0 0 0];
+	inletPressure uniform 101276;
+	internalField  uniform 101325; //101276
+	outletPressure uniform 101598;
+#else 
+	//incompressible
+	dimensions      [0 2 -2 0 0 0 0];
+	internalField  uniform 0;
+	outletPressure uniform 0;
+	inletPressure uniform 1000;
+#endif
+
+boundaryField
+{
+    "(HUB|SHROUD|BLADE)"
+    {
+        type            zeroGradient;
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type            cyclicAMI;   
+    }
+
+    INLET
+    {
+        type            zeroGradient;
+	
+	/*
+        type            rotatingTotalPressure;
+        U               Urel;
+        phi             phi;
+        p0              uniform 99708.8;
+        omega           (0 0 -104.72);    
+
+        type            totalPressure;
+        p0              $inletPressure;
+        value           uniform 99708.8;
+        U               Urel;
+	*/
+     }
+	
+    OUTLET
+    {
+        type fixedMean;
+        value $outletPressure; 
+        meanValue $outletPressure;
+
+	/*
+	type zeroGradient;
+
+	type            entrainmentPressure;
+        p0              $outletPressure;
+
+        type		fixedValue;
+	value 		$outletPressure;
+        
+	type            totalPressure;
+        p0              $outletPressure;
+        value           $internalField;
+        U               Urel;
+        */
+    }
+
+}
+
+
+// ************************************************************************* //
