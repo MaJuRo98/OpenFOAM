@@ -28,7 +28,9 @@ X Generate a mesh with cfMesh
 |
 -> Refine with box, step wise refinment -> finish cfMesh-File
 
-Mesh rotor and run actual 0.5 stages case
+X Mesh rotor with commerical tool
+
+-> Find working Boundary conidtions for case A02
 
 Add static domains
 

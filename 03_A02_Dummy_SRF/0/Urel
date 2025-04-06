@@ -1,0 +1,141 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      Urel;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 1 -1 0 0 0 0];
+
+inletVelocity  50;
+nPassages 4;
+nBlades 63;
+massflowrate 10.613; 	
+
+
+//#include "initialConditions"
+
+internalField uniform (0 0 $inletVelocity); //50.69
+
+/*
+internalField #codeStream
+{
+	codeInclude
+	#{
+	   #include "fvCFD.H"
+	#};
+
+	codeOptions
+	#{
+	   -I$(LIB_SRC)/finiteVolume/lnInclude \
+	   -I$(LIB_SRC)/meshTools/lnInclude
+	#};
+	
+	codeLibs
+	#{
+	    -lmeshTools \
+	    -lfiniteVolume
+	#};
+		
+	code
+	#{
+
+        const IOdictionary& d = static_cast<const IOdictionary&>(dict);
+        const fvMesh& mesh = refCast<const fvMesh>(d.db());
+              
+        vectorField Uax(mesh.nCells(), vector(0,0,45));
+	vectorField Urel(mesh.nCells(), vector(0,0,0));
+
+        scalar rpm (1000.0);
+        //vector omega (0,0,(1*rpm/60.0*2.0*M_PI));
+        vector omega (0,0,104.72);
+	//vector Uax (0,0,45);
+
+        forAll(Urel, i)
+        {
+                Urel[i] = (omega ^ mesh.C()[i]) + Uax[i];
+                //Urel[i] = vector(0,1,0);
+        }
+        writeEntry(os, "", Urel);
+	#};
+}; 
+*/
+	
+boundaryField
+{
+    "(HUB|BLADE)"
+    {
+        type		noSlip;
+    }
+
+   SHROUD
+   {
+        type rotatingWallVelocity;
+        origin (0 0 0);
+        axis (0 0 -1);
+        omega 104.72;
+   }
+
+    INLET
+    {
+
+    type            SRFVelocity;
+    inletValue      uniform (0 0 $inletVelocity);
+    relative        no;
+    value 	        uniform (0 0 $inletVelocity);
+
+    /*
+    type            pressureInletOutletVelocity;
+    phi             phi;
+    value           uniform (0 0 25);
+    */
+
+    /*
+	type fixedValue;
+	value uniform (0 0 $inletVelocity);
+    */
+    
+    }
+
+    OUTLET
+    {
+    
+
+	type zeroGradient;
+
+        /*
+        type            inletOutlet;
+        inletValue      uniform (0 0 0);
+        value           uniform (0 0 0);
+         
+        type            pressureInletOutletVelocity;
+        phi             phi;
+        value           uniform (0 0 45);
+
+	type                flowRateOutletVelocity;
+        massFlowRate        0.5054; //#calc "${massflowrate}*(${nBlades}/${nPassages})";
+        //profile             turbulentBL;
+        rho                 rho;
+        rhoOutlet           1.25;    
+	*/
+
+
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type            cyclicAMI;
+    }
+}
+
+
+// ************************************************************************* //
