@@ -30,7 +30,7 @@ X Generate a mesh with cfMesh
 
 X Mesh rotor with commerical tool
 
--> Find working Boundary conidtions for case A02
+X -> Find working Boundary conidtions for case A02
 
 Add static domains
 
