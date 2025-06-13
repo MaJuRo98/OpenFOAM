@@ -1,0 +1,65 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      nut;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -1 0 0 0 0];
+
+internalField   uniform 0;
+
+lowRE 0;
+
+boundaryField
+{
+
+    "(HUB|SHROUD|BLADE)"
+    {
+	#if #calc "${lowRE} == 1"
+		//Low RE
+        	type            nutLowReWallFunction;
+        	value           uniform 0;
+	#else 
+		//High Re
+        	type            nutUSpaldingWallFunction;
+        	value           uniform 0;
+
+	#endif
+
+
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type            cyclicAMI;   
+    }
+
+    INLET
+    {
+        type            calculated;
+        value           $internalField;
+    }
+	
+    OUTLET
+    {
+        type            calculated;
+        value           $internalField;
+
+    }
+
+
+
+}
+
+
+// ************************************************************************* //

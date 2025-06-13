@@ -1,0 +1,179 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+#include "initialConditions"
+
+internalField uniform $kfarfield;
+
+boundaryField
+{
+    "(HUB|BLADE|SHROUD)"
+    {
+
+	#if #calc "${lowRE} == 1"
+		//Low RE
+        	type            kLowReWallFunction;
+        	value           uniform $kfarfield;
+
+	#else 
+		//High Re
+    		type            kqRWallFunction;
+        	value           uniform $kfarfield;
+	#endif
+
+    }
+
+    INLET
+    {
+        type fixedValue;
+        value #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+            code
+            #{
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+                
+                const fvMesh& mesh = refCast<const fvMesh>(d.db());
+                const label id = mesh.boundary().findPatchID("INLET");
+                const fvPatch& patch = mesh.boundary()[id];
+            
+                scalarField k(patch.size(), scalar(0) );
+                
+                std::vector<float> rProfile = {0.63,0.632,0.634,0.635,0.637,0.64,0.645,0.65,0.657,0.667,0.678,0.69,0.702,0.713,0.723,0.73,0.735,0.74,0.743,0.745,0.746,0.748,0.75};
+                std::vector<float> kProfile = {1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1}; 
+                
+                //std::vector<float> kProfile = {0,4.444,3.645,1.373,0.233,0.049,0.05,0.042,0.038,0.045,0.052,0.068,0.383,0.902,2.642,3.995,4.279,4.756,5.421,0}; 
+
+                //const scalar s = 0.5;
+
+                forAll(k, i)
+                {
+                    const scalar x = patch.Cf()[i][0];
+                    const scalar y = patch.Cf()[i][1];
+                    
+                    //const scalar z = patch.Cf()[i][2];
+
+                    const scalar r = sqrt(x*x + y*y);
+
+                    label idx = 0;
+                    
+                    //How does this while loop operate, does it work as intendet?
+                    while (idx < rProfile.size() - 2 && r > rProfile[idx + 1])
+                    {
+                        idx++;
+                    }
+
+                    scalar r0 = rProfile[idx];
+                    scalar r1 = rProfile[idx + 1];
+                    scalar k0 = kProfile[idx];
+                    scalar k1 = kProfile[idx + 1];
+
+                    // Handle case where r0 == r1 (shouldn't happen unless profile has error)
+                    if (mag(r1 - r0) < SMALL)
+                    {
+                        k[i] = k0;  // or k1, both are equal
+                    }
+                    else
+                    {
+                        k[i] = k0 + (k1 - k0) * ((r - r0) / (r1 - r0));
+                    }
+                       
+                }
+                       
+                writeEntry(os, "", k);
+                
+            #};
+        };
+        /*
+        type fixedValue;
+        value #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+            code
+            #{
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+                
+                const fvMesh& mesh = refCast<const fvMesh>(d.db());
+                const label id = mesh.boundary().findPatchID("INLET");
+                const fvPatch& patch = mesh.boundary()[id];
+            
+                scalarField k(patch.size(), scalar(0) );
+
+                const scalar s = 0.5;
+
+                forAll(k, i)
+                {
+                const scalar x = patch.Cf()[i][0];
+                const scalar y = patch.Cf()[i][1];
+                const scalar z = patch.Cf()[i][2];
+
+                k[i] = scalar(-1.*(pow(y/s, 2) + pow((x-s)/s,2) - 1.0));
+                }
+                writeEntry(os, "", k);
+                
+            #};
+        };
+        */
+    }
+
+
+    OUTLET
+    {
+        type            zeroGradient;
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type cyclicAMI;
+    }
+}
+
+
+// ************************************************************************* //

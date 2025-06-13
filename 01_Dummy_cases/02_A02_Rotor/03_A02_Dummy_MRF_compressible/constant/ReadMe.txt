@@ -1,1 +1,0 @@
-Simulation mit OF_matchingPeriodicityCoarse_3 läuft durch mit SRFSimpleFoam

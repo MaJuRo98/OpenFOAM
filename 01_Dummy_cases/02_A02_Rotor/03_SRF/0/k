@@ -1,0 +1,60 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    location    "0";
+    object      k;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [0 2 -2 0 0 0 0];
+
+#include "initialConditions"
+
+internalField uniform $kfarfield;
+
+boundaryField
+{
+    "(HUB|BLADE|SHROUD)"
+    {
+
+	#if #calc "${lowRE} == 1"
+		//Low RE
+        	type            kLowReWallFunction;
+        	value           uniform $kfarfield;
+
+	#else 
+		//High Re
+    		type            kqRWallFunction;
+        	value           uniform $kfarfield;
+	#endif
+
+    }
+
+    INLET
+    {
+        type            fixedValue;
+        value           uniform $kfarfield;
+    }
+
+
+    OUTLET
+    {
+        type            zeroGradient;
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type cyclicAMI;
+    }
+}
+
+
+// ************************************************************************* //

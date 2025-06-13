@@ -1,0 +1,93 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volScalarField;
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "initialConditions"
+
+#if #calc "${compressible} == 1"
+	//compressible
+	dimensions      [1 -1 -2 0 0 0 0];
+	inletPressure uniform 101275;
+	internalField  uniform 102000; //101276
+	outletPressure uniform 101323;
+#else 
+	//incompressible
+	dimensions      [0 2 -2 0 0 0 0];
+	internalField  uniform 250;
+	outletPressure uniform 0;
+	inletPressure uniform 250;
+#endif
+
+boundaryField
+{
+    INLET
+    {   
+        /*   
+        //Compressible total pressure BC
+        type            totalPressure;
+
+        rho             rho;
+        U               U;
+        phi             phi;
+
+        p0              $inletPressure;
+        value           $inletPressure;
+        */    
+
+
+        type            zeroGradient;      
+
+     }
+	
+    OUTLET
+    {
+        type fixedValue;
+        value $outletPressure;
+
+	/*
+        type fixedMean;
+        value $outletPressure; 
+        meanValue $outletPressure;
+        */
+
+        /*
+	    type zeroGradient;
+        */
+
+        /*
+	    type        entrainmentPressure;
+        p0          $outletPressure;
+        type		fixedValue;
+	    value 		$outletPressure;
+        
+	    type            totalPressure;
+        p0              $outletPressure;
+        value           $internalField;
+        U               Urel;
+        */
+    }
+
+    "(HUB|SHROUD|BLADE)"
+    {
+        type            zeroGradient;
+    }
+
+    "(PER_1|PER_2)"
+    {
+        type            cyclicAMI;   
+    }
+}
+
+
+// ************************************************************************* //

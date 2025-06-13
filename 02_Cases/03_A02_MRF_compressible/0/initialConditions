@@ -1,0 +1,12 @@
+compressible 1;
+lowRE 0;
+
+Ufarfield 53.59;
+
+I 0.05;
+
+lengthscale #calc "0.05*0.75";
+
+kfarfield #calc "3/2*pow($Ufarfield*$I,2)";
+
+epsilonfarfield #calc "(pow(0.09,0.75)*pow($kfarfield,1.5))/($lengthscale)";
