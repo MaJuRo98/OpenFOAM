@@ -1,7 +1,7 @@
 # OpenFOAM Case Collection
 
 This repository contains my personal collection of OpenFOAM case setups, focused on generating simulation cases for an **axial compressor rotor**.  
-Each case includes a step-by-step configuration process.
+Each case will later includes a step-by-step configuration process.
 
 ---
 
