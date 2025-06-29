@@ -1,4 +1,4 @@
-# OpenFOAM Case Collection
+# OpenFOAM case Collection
 
 This repository contains my personal collection of OpenFOAM case setups, focused on generating simulation cases for an **axial compressor rotor**.  
 Each case will later includes a step-by-step configuration process.
@@ -7,7 +7,7 @@ Each case will later includes a step-by-step configuration process.
 
 ## ✅ Completed Tasks
 
-### General Setup
+### General setup
 - [x] Create segments in `blockMesh` with a defined radius or copy from `nccImpeller`
 - [x] Run `createNonConformalCouples` for the segments
 - [x] Set up cyclic boundary conditions
@@ -33,11 +33,12 @@ Each case will later includes a step-by-step configuration process.
 
 ## 🛠️ To-Do
 
-### Single Domain Setup
+### Single domain setup
 - Write custom boundary condition for **total pressure profile**
 
-### Multiple Domain Setup
+### Multiple domains Setup
 - Add static domains
-- Add IGV (Inlet Guide Vanes) and stators
+- Add IGV and stators
+- Add multible stages 
 
 
