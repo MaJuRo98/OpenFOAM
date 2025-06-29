@@ -34,7 +34,7 @@ Each case will later includes a step-by-step configuration process.
 ## 🛠️ To-Do
 
 ### Single domain setup
-- Write custom boundary condition for **total pressure profile**
+- [ ] Write custom boundary condition for **total pressure profile**
 
 ### Multiple domains Setup
 - [ ] Write mixing plane BC
