@@ -37,8 +37,9 @@ Each case will later includes a step-by-step configuration process.
 - Write custom boundary condition for **total pressure profile**
 
 ### Multiple domains Setup
-- Add static domains
-- Add IGV and stators
-- Add multible stages 
+- [] Write mixing plane BC
+- [] Add static domains
+- [] Add IGV and stators
+- [] Add multible stages 
 
 
