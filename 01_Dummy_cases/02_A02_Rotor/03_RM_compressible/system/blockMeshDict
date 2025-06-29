@@ -1,0 +1,202 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Note: this file is a Copy of $FOAM_TUTORIALS/resources/blockMesh/pitzDaily
+
+convertToMeters 0.001;
+
+//Radial values
+maxRadius 750;
+minRadius 630;
+
+thetaOne 0;
+thetaTwo 5.714;
+
+sectionLength 600;
+
+cosRad_AngleOne
+#codeStream
+{
+    code
+    #{
+    scalar rad_AngleOne = 0;
+    scalar cosRad_AngleOne = 0;
+
+        if ($thetaOne == 0)
+        {
+            cosRad_AngleOne = 1;
+        }
+        else
+        {
+             rad_AngleOne = degToRad($thetaOne);
+             cosRad_AngleOne = cos(rad_AngleOne);
+        }
+
+
+        os << cosRad_AngleOne;
+
+
+    #};
+};
+
+sinRad_AngleOne
+#codeStream
+{
+    code
+    #{
+    scalar rad_AngleOne = 0;
+    scalar sinRad_AngleOne = 0;
+
+        if ($thetaOne == 0)
+        {
+            sinRad_AngleOne = 0;
+        }
+        else
+        {
+             rad_AngleOne = degToRad($thetaOne);
+             sinRad_AngleOne = sin(rad_AngleOne);
+        }
+
+
+        os << sinRad_AngleOne;
+
+
+    #};
+};
+
+
+//- Derived quantities
+deltaTheta   #calc "$thetaTwo - $thetaOne";
+//rad_AngleOne #calc "degToRad($thetaOne)";
+rad_AngleTwo #calc "degToRad($thetaTwo)";
+
+//Point1
+x_0 #calc "$minRadius*$cosRad_AngleOne";
+y_0 #calc "$minRadius*$sinRad_AngleOne";
+//Point2
+x_1 #calc "$maxRadius*$cosRad_AngleOne";
+y_1 #calc "$maxRadius*$sinRad_AngleOne";
+//Point 3
+x_2 #calc "$maxRadius*cos($rad_AngleTwo)";
+y_2 #calc "$maxRadius*sin($rad_AngleTwo)";
+//Point4
+x_3 #calc "$minRadius*cos($rad_AngleTwo)";
+y_3 #calc "$minRadius*sin($rad_AngleTwo)";
+
+
+vertices
+(
+
+    ($x_0 $y_0 0)
+    ($x_1 $y_1 0)
+    ($x_2 $y_2 0)
+    ($x_3 $y_3 0)
+    ($x_0 $y_0 #calc "1*$sectionLength")
+    ($x_1 $y_1 #calc "1*$sectionLength")
+    ($x_2 $y_2 #calc "1*$sectionLength")
+    ($x_3 $y_3 #calc "1*$sectionLength")
+);
+
+
+blocks
+(
+    //IGV
+    hex (0 1 2 3 4 5 6 7) igv (50 40 100) simpleGrading (1 1 1)
+);
+
+edges
+    (
+        arc 1 2  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 0 3  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 5 6  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+        arc 4 7  $deltaTheta (0 0 1) //Dircetion of arc dictates arc side
+
+    );
+
+
+boundary
+(
+    INLET
+    {
+        type patch;
+        faces
+        (
+            (0 1 2 3)
+        );
+    }
+    
+    OUTLET
+    {
+        type patch;
+        faces
+        (
+            //(20 21 22 23)
+            (4 5 6 7)
+        );
+    }
+
+    SHROUD
+    {
+        type wall;
+        faces
+        (
+            //(0 4 7 3)
+            (1 5 6 2)
+        );
+    }
+  
+    HUB
+    {
+        type wall;
+        faces
+        (
+            (0 4 7 3)
+            //(1 5 6 2)
+        );
+    }
+
+
+    PER_1
+    {
+        type cyclicAMI;
+        neighbourPatch PER_2;
+	    transformType rotational;
+        rotationAxis (0 0 1);
+        rotationCentre (0 0 0);
+
+        faces
+        (
+
+            (0 4 5 1)
+        );
+    }
+
+    PER_2
+    {
+        type cyclicAMI;
+	    transformType rotational;
+        rotationAxis (0 0 1);
+        rotationCentre (0 0 0);
+
+
+        neighbourPatch PER_1;
+        faces
+        (
+            (2 6 7 3)
+        );
+    }
+);
+
+// ************************************************************************* //

@@ -115,52 +115,6 @@ boundaryField
                 
             #};
         };
-        /*
-        type fixedValue;
-        value #codeStream
-        {
-            codeInclude
-            #{
-                #include "fvCFD.H"
-            #};
-            codeOptions
-            #{
-                -I$(LIB_SRC)/finiteVolume/lnInclude \
-                -I$(LIB_SRC)/meshTools/lnInclude
-            #};
-            codeLibs
-            #{
-                -lmeshTools \
-                -lfiniteVolume
-            #};
-            code
-            #{
-                const IOdictionary& d = static_cast<const IOdictionary&>
-                (
-                    dict.parent().parent()
-                );
-                
-                const fvMesh& mesh = refCast<const fvMesh>(d.db());
-                const label id = mesh.boundary().findPatchID("INLET");
-                const fvPatch& patch = mesh.boundary()[id];
-            
-                scalarField k(patch.size(), scalar(0) );
-
-                const scalar s = 0.5;
-
-                forAll(k, i)
-                {
-                const scalar x = patch.Cf()[i][0];
-                const scalar y = patch.Cf()[i][1];
-                const scalar z = patch.Cf()[i][2];
-
-                k[i] = scalar(-1.*(pow(y/s, 2) + pow((x-s)/s,2) - 1.0));
-                }
-                writeEntry(os, "", k);
-                
-            #};
-        };
-        */
     }
 
 
