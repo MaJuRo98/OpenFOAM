@@ -8,14 +8,14 @@ Each case will later includes a step-by-step configuration process.
 ## ✅ Completed Tasks
 
 ### General Setup
-- Create segments in `blockMesh` with a defined radius or copy from `nccImpeller`
-- Run `createNonConformalCouples` for the segments
-- Set up cyclic boundary conditions
-- Add input variable for dynamic file sizing
-- Create automatic slice detection using Python script (for `nonConformingCoupling` file)
-- Generate mesh with `cfMesh`
-- Mesh rotor with commercial meshing tool
-- Find working boundary conditions for case **A02**
+- [x] Create segments in `blockMesh` with a defined radius or copy from `nccImpeller`
+- [x] Run `createNonConformalCouples` for the segments
+- [x] Set up cyclic boundary conditions
+- [x] Add input variable for dynamic file sizing
+- [x] Create automatic slice detection using Python script (for `nonConformingCoupling` file)
+- [x] Generate mesh with `cfMesh`
+- [x] Mesh rotor with commercial meshing tool
+- [x] Find working boundary conditions for case **A02**
 
 ### cfMesh setup
 - [x] Create patches  
