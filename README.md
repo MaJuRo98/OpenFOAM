@@ -1,38 +1,43 @@
-# OpenFOAM
-My personal OpenFOAM case collection
-Step by step case setup to generate an axial compressor
+# OpenFOAM Case Collection
 
-To add:
+This repository contains my personal collection of OpenFOAM case setups, focused on generating simulation cases for an **axial compressor rotor**.  
+Each case includes a step-by-step configuration process.
 
-X Create segments in blockMesh with a certain radius or copy from nccImpeller 
+---
 
-X Run createNonConformalCouples for the segment
+## ✅ Completed Tasks
 
-X Cyclic boundary conditions
+### General Setup
+- Create segments in `blockMesh` with a defined radius or copy from `nccImpeller`
+- Run `createNonConformalCouples` for the segments
+- Set up cyclic boundary conditions
+- Add input variable for dynamic file sizing
+- Create automatic slice detection using Python script (for `nonConformingCoupling` file)
+- Generate mesh with `cfMesh`
+- Mesh rotor with commercial meshing tool
+- Find working boundary conditions for case **A02**
 
-X Change size of file by input variable
+### cfMesh setup
+- [x] Create patches  
+- [x] Add boundary layers  
+- [x] Refine on patches  
+- [x] Refine using box (stepwise refinement) – finalize `cfMesh` dict
 
-X Automatic slice detection -> create Python script to generate nonConformingCoupling-file
+### Profiles and Boundary Conditions
+- Create radial profiles of:
+  - [x] Turbulent kinetic energy `k`  
+  - [x] Dissipation rate `ε`  
 
-X Generate a mesh with cfMesh
 
+---
 
-|
--> Create patches x 
+## 🛠️ To-Do
 
-|
--> Add boundary layer x
+### Single Domain Setup
+- Write custom boundary condition for **total pressure profile**
 
-|
--> Refine on patches x
-|
--> Refine with box, step wise refinment -> finish cfMesh-File
+### Multiple Domain Setup
+- Add static domains
+- Add IGV (Inlet Guide Vanes) and stators
 
-X Mesh rotor with commerical tool
-
-X -> Find working Boundary conidtions for case A02
-
-Add static domains
-
-Add IGV and stators
 
