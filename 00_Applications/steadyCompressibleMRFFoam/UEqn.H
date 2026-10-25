@@ -1,21 +1,17 @@
-    // Solve the Momentum equation
+    // Added due to error during simulation start?
+    U.storePrevIter();
+    URel.storePrevIter();
 
-    MRF.correctBoundaryVelocity(U);
-
-    tmp<fvVectorMatrix> tUEqn
+    fvVectorMatrix UEqn
     (
-        fvm::div(phi, U)
-      + MRF.DDt(rho, U)
-      + turbulence->divDevTau(U)
-     ==
-        fvModels.source(rho, U)
+        fvm::ddt(rho, U)
+      + fvm::div(phi, U)
+      + turbulence->divDevRhoReff()
     );
-    fvVectorMatrix& UEqn = tUEqn.ref();
+
+    // MRF: add Coriolis force
+    mrfZones.addCoriolis(rho, UEqn);
 
     UEqn.relax();
 
-    fvConstraints.constrain(UEqn);
-
     solve(UEqn == -fvc::grad(p));
-
-    fvConstraints.constrain(U);

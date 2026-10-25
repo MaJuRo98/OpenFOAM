@@ -1,72 +1,121 @@
-Info<< "Reading thermophysical properties\n" << endl;
+    Info<< "Reading thermophysical properties\n" << endl;
 
-autoPtr<fluidThermo> pThermo
-(
-    fluidThermo::New(mesh)
-);
-fluidThermo& thermo = pThermo();
-thermo.validate(args.executable(), "h", "e");
-
-volScalarField& p = thermo.p();
-
-volScalarField rho
-(
-    IOobject
+    autoPtr<basicPsiThermo> pThermo
     (
-        "rho",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    thermo.rho()
-);
+        basicPsiThermo::New(mesh)
+    );
+    basicPsiThermo& thermo = pThermo();
 
-Info<< "Reading field U\n" << endl;
-volVectorField U
-(
-    IOobject
+    volScalarField& p = thermo.p();
+    volScalarField& h = thermo.h();
+    const volScalarField& T = thermo.T();
+    volScalarField psis("psi", thermo.psi()/thermo.Cp()*thermo.Cv());
+    psis.oldTime();
+
+    volScalarField rho
     (
-        "U",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
+        IOobject
+        (
+            "rho",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        thermo.rho()
+    );
+    rho.oldTime();
 
-#include "compressibleCreatePhi.H"
-
-pressureReference pressureReference
-(
-    p,
-    simple.dict(),
-    thermo.incompressible()
-);
-
-mesh.schemes().setFluxRequired(p.name());
-
-Info<< "Creating turbulence model\n" << endl;
-autoPtr<compressible::momentumTransportModel> turbulence
-(
-    compressible::momentumTransportModel::New
+    Info<< "\nReading field U\n" << endl;
+    volVectorField U
     (
-        rho,
-        U,
-        phi,
-        thermo
-    )
-);
+        IOobject
+        (
+            "U",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
 
-Info<< "Creating thermophysical transport model\n" << endl;
-autoPtr<fluidThermophysicalTransportModel> thermophysicalTransport
-(
-    fluidThermophysicalTransportModel::New(turbulence(), thermo)
-);
+    // Store kinetic energy for total enthalpy equation
+    volScalarField K
+    (
+        "K",
+        0.5*(magSqr(U))
+    );
 
-dimensionedScalar initialMass = fvc::domainIntegrate(rho);
+#   include "compressibleCreatePhi.H"
 
-#include "createMRF.H"
-#include "createFvModels.H"
-#include "createFvConstraints.H"
+    Info<< "Creating turbulence model\n" << endl;
+    autoPtr<compressible::RASModel> turbulence
+    (
+        compressible::RASModel::New
+        (
+            rho,
+            U,
+            phi,
+            thermo
+        )
+    );
+
+    // Create MRF zones
+    MRFZones mrfZones(mesh);
+    mrfZones.correctBoundaryVelocity(U);
+
+    // Tangential component of velocity needed for rothalpy
+    volScalarField UTheta
+    (
+        IOobject
+        (
+            "UTheta",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE
+        ),
+        mag(U)
+    );
+    UTheta = mrfZones.calcMagUTheta(U);
+
+    // Create relative velocity
+    volVectorField URel
+    (
+        IOobject
+        (
+            "URel",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        U
+    );
+    mrfZones.relativeVelocity(URel);
+
+    // Create rotational velocity (= omega x r)
+    volVectorField URot
+    (
+        "URot",
+        U - URel
+    );
+
+    // Create rothalpy, in two steps to preserve boundary conditions
+    volScalarField i
+    (
+        IOobject
+        (
+            "i",
+            runTime.timeName(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh
+    );
+
+    i == h + 0.5*magSqr(U) - mag(UTheta)*mag(URot);
+
+    mesh.schemesDict().setFluxRequired(p.name());

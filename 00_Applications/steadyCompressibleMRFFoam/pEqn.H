@@ -1,141 +1,82 @@
-rho = thermo.rho();
-rho.relax();
-
-const volScalarField rAU("rAU", 1.0/UEqn.A());
-const surfaceScalarField rhorAUf("rhorAUf", fvc::interpolate(rho*rAU));
-
-tmp<volScalarField> rAtU
-(
-    simple.consistent()
-  ? volScalarField::New("rAtU", 1.0/(1.0/rAU - UEqn.H1()))
-  : tmp<volScalarField>(nullptr)
-);
-tmp<surfaceScalarField> rhorAtUf
-(
-    simple.consistent()
-  ? surfaceScalarField::New("rhoRAtUf", fvc::interpolate(rho*rAtU()))
-  : tmp<surfaceScalarField>(nullptr)
-);
-
-const volScalarField& rAAtU = simple.consistent() ? rAtU() : rAU;
-const surfaceScalarField& rhorAAtUf =
-    simple.consistent() ? rhorAtUf() : rhorAUf;
-
-volVectorField HbyA(constrainHbyA(rAU*UEqn.H(), U, p));
-
-tUEqn.clear();
-
-surfaceScalarField phiHbyA
-(
-    "phiHbyA",
-    fvc::interpolate(rho)*fvc::flux(HbyA)
-);
-
-MRF.makeRelative(fvc::interpolate(rho), phiHbyA);
-
-bool closedVolume = false;
-
-// Update the pressure BCs to ensure flux consistency
-constrainPressure(p, rho, U, phiHbyA, rhorAAtUf, MRF);
-
-if (simple.transonic())
 {
-    const surfaceScalarField phid
-    (
-        "phid",
-        fvc::interpolate(psi)*phiHbyA/fvc::interpolate(rho)
-    );
+    volScalarField rUA = 1.0/UEqn.A();
 
-    const fvScalarMatrix divPhidp(fvm::div(phid, p));
-    phiHbyA -= divPhidp.flux();
+    surfaceScalarField psisf = fvc::interpolate(psis);
+    surfaceScalarField rhof = fvc::interpolate(rho);
 
-    if (simple.consistent())
+    // Needs to be outside of loop since p is changing, but psi and rho are not.
+    surfaceScalarField rhoReff = rhof - psisf*fvc::interpolate(p);
+
+    // --- PISO loop
+    while (pimple.correct())
     {
-        phiHbyA += (rhorAAtUf - rhorAUf)*fvc::snGrad(p)*mesh.magSf();
-        HbyA += (rAAtU - rAU)*fvc::grad(p);
-    }
+        U = rUA*UEqn.H();
 
-    while (simple.correctNonOrthogonal())
-    {
-        fvScalarMatrix pEqn
-        (
-            fvc::div(phiHbyA) + divPhidp
-          - fvm::laplacian(rhorAAtUf, p)
-          ==
-            fvModels.source(psi, p, rho.name())
-        );
+        // Update boundary velocity for consistency with the flux
+        mrfZones.correctBoundaryVelocity(U);
 
-        // Relax the pressure equation to ensure diagonal-dominance
-        pEqn.relax();
+        // Calculate phi for boundary conditions
+        phi = rhof*(fvc::interpolate(U) & mesh.Sf());
 
-        pEqn.setReference
-        (
-            pressureReference.refCell(),
-            pressureReference.refValue()
-        );
+        surfaceScalarField phid2 = rhoReff/rhof*phi;
 
-        pEqn.solve();
+        surfaceScalarField phid("phid", psisf/rhof*phi);
 
-        if (simple.finalNonOrthogonalIter())
+        // Make fluxes relative within the MRF zone
+        mrfZones.relativeFlux(rhoReff, phi);
+        mrfZones.relativeFlux(psisf, phid);
+        mrfZones.relativeFlux(rhoReff, phid2);
+
+        p.storePrevIter();
+
+        while (pimple.correctNonOrthogonal())
         {
-            phi = phiHbyA + pEqn.flux();
+            fvScalarMatrix pEqn
+            (
+	        fvm::ddt(psis, p)
+              + fvm::div(phid, p)
+              + fvc::div(phid2)
+              - fvm::laplacian(rho*rUA, p)
+            );
+
+            pEqn.solve();
+
+            // Calculate the flux
+            if (pimple.finalNonOrthogonalIter())
+            {
+                phi = phid2 + pEqn.flux();
+            }
         }
-    }
-}
-else
-{
-    closedVolume = adjustPhi(phiHbyA, U, p);
 
-    if (simple.consistent())
+        // Use incompressible continuity error check: div(rho U) = 0
+#       include "continuityErrs.H"
+
+        // Relax the pressure
+        p.relax();
+        //Velocity correction based on pressure term
+        U -= rUA*fvc::grad(p);
+        U.correctBoundaryConditions();
+    }
+
+    // Bound the pressure
+    if (min(p) < pMin || max(p) > pMax)
     {
-        phiHbyA += (rhorAAtUf - rhorAUf)*fvc::snGrad(p)*mesh.magSf();
-        HbyA += (rAAtU - rAU)*fvc::grad(p);
+        p.max(pMin);
+        p.min(pMax);
+        p.correctBoundaryConditions();
     }
 
-    while (simple.correctNonOrthogonal())
+    // Bound the velocity
+    volScalarField magU = mag(U);
+
+    if (max(magU) > UMax)
     {
-        fvScalarMatrix pEqn
-        (
-            fvc::div(phiHbyA)
-          - fvm::laplacian(rhorAAtUf, p)
-          ==
-            fvModels.source(psi, p, rho.name())
-        );
+        volScalarField Ulimiter = pos(magU - UMax)*UMax/(magU + smallU)
+            + neg(magU - UMax);
+        Ulimiter.max(scalar(0));
+        Ulimiter.min(scalar(1));
 
-        pEqn.setReference
-        (
-            pressureReference.refCell(),
-            pressureReference.refValue()
-        );
-
-        pEqn.solve();
-
-        if (simple.finalNonOrthogonalIter())
-        {
-            phi = phiHbyA + pEqn.flux();
-        }
+        U *= Ulimiter;
+        U.correctBoundaryConditions();
     }
 }
-
-#include "incompressible/continuityErrs.H"
-
-// Explicitly relax pressure for momentum corrector
-p.relax();
-
-U = HbyA - rAAtU*fvc::grad(p);
-U.correctBoundaryConditions();
-fvConstraints.constrain(U);
-
-fvConstraints.constrain(p);
-
-// For closed-volume cases adjust the pressure and density levels
-// to obey overall mass continuity
-if (closedVolume && !thermo.incompressible())
-{
-    p += (initialMass - fvc::domainIntegrate(psi*p))
-        /fvc::domainIntegrate(psi);
-    p.correctBoundaryConditions();
-}
-
-rho = thermo.rho();
-rho.relax();
