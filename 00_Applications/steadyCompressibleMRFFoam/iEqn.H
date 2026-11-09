@@ -25,7 +25,7 @@
 
     T.storePrevIter();
 
-    i == h + 0.5*magSqr(U) - mag(UTheta)*mag(URot);
+    i == h + 0.5*magSqr(U) - (U & URotGeom);
     i.correctBoundaryConditions();
 
     fvScalarMatrix iEqn
@@ -43,7 +43,7 @@
     iEqn.solve();
 
     // Calculate enthalpy out of rothalpy
-    h == i - 0.5*magSqr(U) + mag(UTheta)*mag(URot);
+    h == i - 0.5*magSqr(U) + (UTheta * URot);
     h.correctBoundaryConditions();
 
     thermo.correct();

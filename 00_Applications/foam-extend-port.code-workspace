@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "rhoSimpleFoam"
+		},
+		{
+			"path": "steadyCompressibleMRFFoam"
+		},
+		{
+			"path": "rhoMRFSimpleFoam"
+		}
+	],
+	"settings": {}
+}
